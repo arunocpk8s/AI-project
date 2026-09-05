@@ -26,6 +26,6 @@ See [.githooks/README.md](.githooks/README.md). Activate after cloning with
 
 Edit `index.html` for professional content, `styles.css` for design, and
 `public/assets/` for images and fonts. Avoid invented project metrics or claims.
-The portrait is currently an initials treatment, pending a user-supplied photo.
+The portfolio uses the user-supplied portrait and the confirmed current positioning: AI Architect & OpenShift Architect. Detailed AI tool proficiency and project metrics are not invented.
 
 Font: Manrope by Mikhail Sharanda and Mirko Velimirovic, SIL Open Font License.
