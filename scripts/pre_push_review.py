@@ -16,9 +16,10 @@ SCHEMA = {
     "properties": {
         "status": {"type": "string", "enum": ["pass", "fail", "incomplete"]},
         "coverage_complete": {"type": "boolean"},
+        "reason": {"type": "string"},
         "finding_count": {"type": "integer", "minimum": 0},
     },
-    "required": ["status", "coverage_complete", "finding_count"],
+    "required": ["status", "coverage_complete", "finding_count", "reason"],
     "additionalProperties": False,
 }
 
@@ -69,7 +70,8 @@ If any required object, tool, or coverage is unavailable, return incomplete.
 Both reviewers must finish. Return pass only with complete coverage and zero
 actionable findings. Return fail for findings, including suspected confidential
 secrets requiring investigation. Never emit secret values, including tool output.
-Final output must contain only status, coverage_complete, and finding_count.
+Final output must contain status, coverage_complete, finding_count, and reason.
+Reason must summarize blockers with file/line references and no secret values.
 """
     with tempfile.TemporaryDirectory(prefix="codex-pre-push-") as temp:
         schema = pathlib.Path(temp) / "schema.json"
@@ -93,7 +95,10 @@ Final output must contain only status, coverage_complete, and finding_count.
         )
         if run.returncode != 0 or not output.is_file():
             return False
-        return passed(json.loads(output.read_text(encoding="utf-8")))
+        result = json.loads(output.read_text(encoding="utf-8"))
+        if not passed(result):
+            print(role + ": " + str(result.get("reason", "No diagnostic supplied")), flush=True)
+        return passed(result)
 
 
 def main():
